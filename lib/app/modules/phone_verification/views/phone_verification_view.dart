@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:chat/app/constants/colors/app_colors.dart';
 import 'package:chat/app/constants/text_styles/app_text_styles.dart';
 import 'package:chat/app/constants/widgets/app_constant_widgets.dart';
-import 'package:chat/app/data/local_data/countries_with_flags_data.dart';
+import 'package:chat/app/data/repos/local_data/local_repo_data.dart';
 import 'package:chat/app/models/global/country_with_flags.dart';
 import 'package:chat/widgets/buttons/custom_button_widget.dart';
 import 'package:chat/widgets/inputs/key_board_button.dart';
@@ -27,37 +27,32 @@ class _PhoneVerificationViewState extends State<PhoneVerificationView> {
 
   @override
   void initState() {
-    _dropdownMenuItems = _buildDropDownMenuItems(countriesList);
+    _dropdownMenuItems = LocalDataRepo.buildDropDownMenuItems();
     _selectedCountry = _dropdownMenuItems![0].value;
     super.initState();
   }
 
-  List<DropdownMenuItem<CountryWithFlags>> _buildDropDownMenuItems(
-      List<CountryWithFlags> _countries) {
-    final _items = <DropdownMenuItem<CountryWithFlags>>[];
-    for (final _country in _countries) {
-      final _item = DropdownMenuItem<CountryWithFlags>(
-        value: _country,
-        child: Row(
-          children: [
-            _country.flag!,
-            Text(
-              _country.phoneCode!,
-              style: AppTextStyles.mulishBlack14w600,
-            )
-          ],
-        ),
-      );
-      _items.add(_item);
-    }
-    return _items;
-  }
-
   void _onKeyboardTap(String value) {
-    setState(() {
-      _usersPhoneNumber = _usersPhoneNumber + value;
-    });
-    log('text: $_usersPhoneNumber');
+    // if KR phone number
+    if (_selectedCountry!.phoneCode!.length == 4) {
+      if (_usersPhoneNumber.length < 9) {
+        _usersPhoneNumber = _usersPhoneNumber + value;
+      }
+    }
+    // if RU phone number
+    if (_selectedCountry!.phoneCode!.length == 2) {
+      if (_usersPhoneNumber.length < 10) {
+        _usersPhoneNumber = _usersPhoneNumber + value;
+      }
+    }
+    // if TR phone number
+    if (_selectedCountry!.phoneCode!.length == 3) {
+      if (_usersPhoneNumber.length < 10) {
+        _usersPhoneNumber = _usersPhoneNumber + value;
+      }
+    }
+    setState(() {});
+    log('_usersPhoneNumber: $_usersPhoneNumber');
   }
 
   Widget _phoneContainer() {
@@ -125,6 +120,29 @@ class _PhoneVerificationViewState extends State<PhoneVerificationView> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+          icon: Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.all(
+                Radius.circular(20),
+              ),
+              color: AppColors.black.withAlpha(20),
+            ),
+            child: const Icon(
+              Icons.arrow_back_ios,
+              color: AppColors.black,
+              size: 16,
+            ),
+          ),
+          onPressed: () {
+            Get.back();
+          },
+        ),
+        elevation: 0,
+        backgroundColor: AppColors.white,
+        brightness: Brightness.light,
         title: const Text('PhoneVerificationView'),
         centerTitle: true,
       ),
@@ -165,30 +183,44 @@ class _PhoneVerificationViewState extends State<PhoneVerificationView> {
                     buttonVer: MediaQuery.of(context).size.height * 0.02,
                     onTap: () {
                       String? _code;
-                      setState(() {
-                        _code = _selectedCountry!.phoneCode! +
-                            ' ' +
-                            _usersPhoneNumber;
-                      });
-                      if (_usersPhoneNumber.isNotEmpty) {
+
+                      /// internatianal input formatter masking
+                      if (_usersPhoneNumber.isEmpty) {
+                        Get.snackbar('Warning!', 'Please put your number!');
+                      } else if (_selectedCountry!.phoneCode == '+996' &&
+                          _usersPhoneNumber.length == 9) {
+                        _code = _setCodeBeforeSending();
+                        setState(() {});
+                        // Get.to(() => PhoneOtpView(code: _code!));
+                      } else if (_selectedCountry!.phoneCode == '+7' &&
+                          _usersPhoneNumber.length == 10) {
+                        _code = _setCodeBeforeSending();
+                        setState(() {});
+                        // Get.to(() => PhoneOtpView(code: _code!));
+                      } else if (_selectedCountry!.phoneCode == '+90' &&
+                          _usersPhoneNumber.length == 10) {
+                        _code = _setCodeBeforeSending();
+                        setState(() {});
                         // Get.to(() => PhoneOtpView(code: _code!));
                       } else {
-                        Get.snackbar('Warning!', 'Please put your number!');
+                        Get.snackbar(
+                            'Warning!', 'Phone number does not enough!');
                       }
+                      log('_code ==> $_code');
                     },
                   ),
                   SizedBox(
                     height: 24.0,
                   ),
                   Container(
-                    color: Colors.grey,
+                    color: AppColors.mainColor.withOpacity(0.1),
                     child: KeyBoardButton(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       onKeyboardTap: _onKeyboardTap,
-                      textColor: Colors.black,
+                      textColor: AppColors.black,
                       rightIcon: const Icon(
                         Icons.backspace,
-                        color: Colors.black,
+                        color: AppColors.black,
                       ),
                       rightButtonFn: () {
                         setState(() {
@@ -208,23 +240,26 @@ class _PhoneVerificationViewState extends State<PhoneVerificationView> {
       ),
     );
   }
+
+  String _setCodeBeforeSending() {
+    return _selectedCountry!.phoneCode! + ' ' + _usersPhoneNumber;
+  }
 }
 
-
 //  NumericKeyboard(
-                      //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      //   // onKeyboardTap: _onKeyboardTap,
-                      //   onKeyboardTap: (value) {},
-                      //   textColor: Colors.black,
-                      // rightIcon: Icon(
-                      //   Icons.backspace,
-                      //   color: Colors.black,
-                      // ),
-                      // rightButtonFn: () {
-                      //   setState(() {
-                      //     if (_usersPhoneNumber.isNotEmpty) {
-                      //       _usersPhoneNumber = _usersPhoneNumber.substring(0, _usersPhoneNumber.length - 1);
-                      //     }
-                      //   });
-                      // },
-                      // ),
+//   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//   // onKeyboardTap: _onKeyboardTap,
+//   onKeyboardTap: (value) {},
+//   textColor: Colors.black,
+// rightIcon: Icon(
+//   Icons.backspace,
+//   color: Colors.black,
+// ),
+// rightButtonFn: () {
+//   setState(() {
+//     if (_usersPhoneNumber.isNotEmpty) {
+//       _usersPhoneNumber = _usersPhoneNumber.substring(0, _usersPhoneNumber.length - 1);
+//     }
+//   });
+// },
+// ),
