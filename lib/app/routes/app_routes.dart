@@ -5,10 +5,14 @@ abstract class Routes {
   Routes._();
   static const HOME = _Paths.HOME;
   static const WALKTHROUGH = _Paths.WALKTHROUGH;
+  static const PHONE_VERIFICATION = _Paths.PHONE_VERIFICATION;
+  static const PHONE_OTP = _Paths.PHONE_OTP;
 }
 
 abstract class _Paths {
   _Paths._();
   static const HOME = '/home';
   static const WALKTHROUGH = '/walkthrough';
+  static const PHONE_VERIFICATION = '/phone-verification';
+  static const PHONE_OTP = '/phone-otp';
 }

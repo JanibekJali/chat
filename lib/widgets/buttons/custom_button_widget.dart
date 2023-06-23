@@ -5,6 +5,7 @@ class CustomButtonWidget extends StatelessWidget {
   const CustomButtonWidget({
     Key? key,
     required this.buttonText,
+    required this.onTap,
     this.buttonTextStyle,
     this.buttonHor = 40,
     this.buttonVer = 10,
@@ -13,21 +14,25 @@ class CustomButtonWidget extends StatelessWidget {
   final double buttonHor;
   final double buttonVer;
   final TextStyle? buttonTextStyle;
+  final Function()? onTap;
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.mainColor,
-        borderRadius: BorderRadius.circular(30),
-      ),
-      child: Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: buttonHor,
-          vertical: buttonVer,
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppColors.mainColor,
+          borderRadius: BorderRadius.circular(30),
         ),
-        child: Text(
-          buttonText!,
-          style: buttonTextStyle,
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: buttonHor,
+            vertical: buttonVer,
+          ),
+          child: Text(
+            buttonText!,
+            style: buttonTextStyle,
+          ),
         ),
       ),
     );

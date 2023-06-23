@@ -1,5 +1,6 @@
 import 'package:chat/app/constants/assets/app_assets.dart';
 import 'package:chat/app/constants/text_styles/app_text_styles.dart';
+import 'package:chat/app/modules/phone_verification/views/phone_verification_view.dart';
 import 'package:chat/widgets/buttons/custom_button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -35,6 +36,9 @@ class WalkthroughView extends GetView<WalkthroughController> {
                   height: 20,
                 ),
                 CustomButtonWidget(
+                  onTap: () {
+                    Navigator.pushNamed(context, '/phone-verification');
+                  },
                   buttonText: 'Start Messaging',
                   buttonTextStyle: AppTextStyles.mulishWhite16w700,
                   buttonHor: MediaQuery.of(context).size.width * 0.25,
