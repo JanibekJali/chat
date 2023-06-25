@@ -5,6 +5,7 @@ import 'package:chat/app/constants/text_styles/app_text_styles.dart';
 import 'package:chat/app/constants/widgets/app_constant_widgets.dart';
 import 'package:chat/app/data/repos/local_data/local_repo_data.dart';
 import 'package:chat/app/models/global/country_with_flags.dart';
+import 'package:chat/app/modules/phone_verification/views/phone_otp.dart';
 import 'package:chat/widgets/buttons/custom_button_widget.dart';
 import 'package:chat/widgets/inputs/key_board_button.dart';
 import 'package:flutter/material.dart';
@@ -191,17 +192,17 @@ class _PhoneVerificationViewState extends State<PhoneVerificationView> {
                           _usersPhoneNumber.length == 9) {
                         _code = _setCodeBeforeSending();
                         setState(() {});
-                        // Get.to(() => PhoneOtpView(code: _code!));
+                        Get.to(() => PhoneOtp(code: _code!));
                       } else if (_selectedCountry!.phoneCode == '+7' &&
                           _usersPhoneNumber.length == 10) {
                         _code = _setCodeBeforeSending();
                         setState(() {});
-                        // Get.to(() => PhoneOtpView(code: _code!));
+                        Get.to(() => PhoneOtp(code: _code!));
                       } else if (_selectedCountry!.phoneCode == '+90' &&
                           _usersPhoneNumber.length == 10) {
                         _code = _setCodeBeforeSending();
                         setState(() {});
-                        // Get.to(() => PhoneOtpView(code: _code!));
+                        Get.to(() => PhoneOtp(code: _code!));
                       } else {
                         Get.snackbar(
                             'Warning!', 'Phone number does not enough!');
@@ -209,7 +210,7 @@ class _PhoneVerificationViewState extends State<PhoneVerificationView> {
                       log('_code ==> $_code');
                     },
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 24.0,
                   ),
                   Container(

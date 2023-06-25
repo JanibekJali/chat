@@ -7,6 +7,7 @@ abstract class Routes {
   static const WALKTHROUGH = _Paths.WALKTHROUGH;
   static const PHONE_VERIFICATION = _Paths.PHONE_VERIFICATION;
   static const PHONE_OTP = _Paths.PHONE_OTP;
+  static const REDIRECT = _Paths.REDIRECT;
 }
 
 abstract class _Paths {
@@ -15,4 +16,5 @@ abstract class _Paths {
   static const WALKTHROUGH = '/walkthrough';
   static const PHONE_VERIFICATION = '/phone-verification';
   static const PHONE_OTP = '/phone-otp';
+  static const REDIRECT = '/redirect';
 }
