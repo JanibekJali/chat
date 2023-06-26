@@ -5,6 +5,7 @@ import 'package:chat/app/constants/text_styles/app_text_styles.dart';
 import 'package:chat/app/constants/widgets/app_constant_widgets.dart';
 import 'package:chat/app/data/repos/local_data/local_repo_data.dart';
 import 'package:chat/app/models/global/country_with_flags.dart';
+import 'package:chat/app/modules/authentication/controllers/authentication_controller.dart';
 import 'package:chat/app/modules/phone_verification/views/phone_otp.dart';
 import 'package:chat/widgets/buttons/custom_button_widget.dart';
 import 'package:chat/widgets/inputs/key_board_button.dart';
@@ -21,6 +22,7 @@ class PhoneVerificationView extends StatefulWidget {
 class _PhoneVerificationViewState extends State<PhoneVerificationView> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final controller = TextEditingController();
+  final _authenticationController = AuthenticationController.findAuthCont;
 
   String _usersPhoneNumber = '';
   List<DropdownMenuItem<CountryWithFlags>>? _dropdownMenuItems;
@@ -182,32 +184,38 @@ class _PhoneVerificationViewState extends State<PhoneVerificationView> {
                     buttonTextStyle: AppTextStyles.mulishWhite16w700,
                     buttonHor: MediaQuery.of(context).size.width * 0.3,
                     buttonVer: MediaQuery.of(context).size.height * 0.02,
-                    onTap: () {
-                      String? _code;
+                    onTap: () async {
+                      String? _phoneNumber;
 
                       /// internatianal input formatter masking
                       if (_usersPhoneNumber.isEmpty) {
                         Get.snackbar('Warning!', 'Please put your number!');
                       } else if (_selectedCountry!.phoneCode == '+996' &&
                           _usersPhoneNumber.length == 9) {
-                        _code = _setCodeBeforeSending();
+                        _phoneNumber = _setCodeBeforeSending();
                         setState(() {});
-                        Get.to(() => PhoneOtp(code: _code!));
+                        await _authenticationController.verifyPhoneNumber(
+                            phoneNumber: _phoneNumber);
+                        // Get.to(() => PhoneOtp(code: _phoneNumber!));
                       } else if (_selectedCountry!.phoneCode == '+7' &&
                           _usersPhoneNumber.length == 10) {
-                        _code = _setCodeBeforeSending();
+                        _phoneNumber = _setCodeBeforeSending();
                         setState(() {});
-                        Get.to(() => PhoneOtp(code: _code!));
+                        await _authenticationController.verifyPhoneNumber(
+                            phoneNumber: _phoneNumber);
+                        // Get.to(() => PhoneOtp(code: _phoneNumber!));
                       } else if (_selectedCountry!.phoneCode == '+90' &&
                           _usersPhoneNumber.length == 10) {
-                        _code = _setCodeBeforeSending();
+                        _phoneNumber = _setCodeBeforeSending();
                         setState(() {});
-                        Get.to(() => PhoneOtp(code: _code!));
+                        await _authenticationController.verifyPhoneNumber(
+                            phoneNumber: _phoneNumber);
+                        // Get.to(() => PhoneOtp(code: _phoneNumber!));
                       } else {
                         Get.snackbar(
                             'Warning!', 'Phone number does not enough!');
                       }
-                      log('_code ==> $_code');
+                      log('_code ==> $_phoneNumber');
                     },
                   ),
                   const SizedBox(

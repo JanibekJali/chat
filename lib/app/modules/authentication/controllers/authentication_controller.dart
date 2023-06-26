@@ -1,7 +1,10 @@
 import 'dart:developer';
 
+import 'package:chat/app/data/services/firebase_auth/firebase_auth_services.dart';
 import 'package:chat/app/models/user/user_model.dart';
 import 'package:chat/app/modules/authentication/authentication_service.dart';
+import 'package:chat/app/modules/phone_verification/views/phone_otp.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 
 import '../authentication.dart';
@@ -28,6 +31,7 @@ class AuthenticationController extends GetxController {
   RxBool isCreatingUser = false.obs;
 
   RxString verificationId = ''.obs;
+
   // getAuthenticatedUser () => _getAuthenticatedUser();
   /* 
   onInit - ushul class chakirylganda 
@@ -44,8 +48,8 @@ class AuthenticationController extends GetxController {
     _authState.value = AuthenticationLoadingState();
     log('_authState.value: ${_authState.value}');
 
-    final _user = await _authenticationService.getCurrentUser();
-    // final _user = null;
+    // final _user = await _authenticationService.getCurrentUser();
+    final _user = null;
     // log('_user.id ==>> ${_user.userID}');
     if (_user == null || _user == UserModel()) {
       _authState.value = UnAuthenticatedState();
@@ -55,5 +59,20 @@ class AuthenticationController extends GetxController {
       log('user bar ->  _authState.value: ${_authState.value}');
       // _userModel.value = _user;
     }
+  }
+
+  Future<void> verifyPhoneNumber({String? phoneNumber}) async {
+    await firebaseAuthServices!.verifyPhoneNumber(
+      phoneNumber: phoneNumber,
+      // isSignIn: isSignIn!,
+    );
+    if (verificationId.value.isNotEmpty) {
+      log('verificationId.value: ${verificationId.value}');
+      Get.to(() => PhoneOtp(code: phoneNumber!));
+    }
+  }
+
+  Future<void> sendSmsCode({String? smsCode}) async {
+    final _userCred = await firebaseAuthServices!.validateOtp(smsCode!);
   }
 }
